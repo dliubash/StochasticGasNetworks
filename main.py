@@ -1,17 +1,17 @@
 import numpy as np
-import data
+import data1
 import datetime
-import functions as func
-import functions2 as func2
-import setVariables
+import functions3 as func
+import functions24 as func2
+import setVariables6
 from scipy.optimize import minimize
 
 #import pyipopt
 
 #initial guess and bounds
-bnds, x0 = setVariables.setInitials()
+bnds, x0 = setVariables6.setInitials()
 # num of variables, eq/ineq, total constr
-nvar, neq, nineq, ncon = setVariables.problemSize()
+nvar, neq, nineq, ncon = setVariables6.problemSize()
 print('number of variables:', nvar)
 
 #bounds of variables
@@ -26,12 +26,28 @@ for i in range(nvar):
 def eval_g(x):
     return np.append(func2.g_eq(x), func2.g_ineq(x))
 
-def eval_jac_g(x, flag=True): #todo or it should be like in hs071.py? and in commented part
-    ret = np.append(func2.g_eq_jac(x, True), func2.g_ineq_jac(x, True), axis=0)
+
+def eval_jac_g(x, flag): #todo should be like in hs071.py? and in commented part. flag value??
+    ret = np.append(func2.g_eq_jac(x), func2.g_ineq_jac(x), axis=0)
+    i_s = []
+    j_s = []
     if flag:
-        return ret
+        for i in range(len(x)):
+            for j in range(len(ret)):
+                i_s.append(i)
+                j_s.append(j)
+        return (np.array(i_s), np.array(j_s))
     else:
-        ret.flatten()
+        return ret.flatten()
+
+
+
+# def eval_jac_g(x, flag=True):
+#     ret = np.append(func2.g_eq_jac(x, True), func2.g_ineq_jac(x, True), axis=0)
+#     if flag:
+#         return ret
+#     else:
+#         ret.flatten()
 
 #max non-zero entries into jacobian
 nnzj = len(eval_jac_g(x0, False)) #todo
